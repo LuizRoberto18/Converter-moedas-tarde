@@ -11,40 +11,54 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   double dolar;
   double euro;
+  double libra;
 
-  final realController = TextEditingController();
-  final dolarController = TextEditingController();
-  final euroController = TextEditingController();
+  TextEditingController realCtrl = TextEditingController();
+  TextEditingController dolarCtrl = TextEditingController();
+  TextEditingController euroCtrl = TextEditingController();
+  TextEditingController libraCtrl = TextEditingController();
 
-  void _realChanged(String text) {
+  void _converterReal(String text) {
     double real = double.parse(text);
-    dolarController.text = (real / dolar).toStringAsPrecision(2);
-    euroController.text = (real / euro).toStringAsPrecision(2);
+    dolarCtrl.text = (real / dolar).toStringAsPrecision(2);
+    euroCtrl.text = (real / euro).toStringAsPrecision(2);
+    libraCtrl.text = (real /libra).toStringAsPrecision(2);
   }
 
-  void _dolarChanged(String text) {
+  void _converterDolar(String text) {
     double dolar = double.parse(text);
-    realController.text = (dolar * this.dolar).toStringAsPrecision(2);
-    euroController.text = (dolar * this.dolar / euro).toStringAsPrecision(2);
+    realCtrl.text = (dolar * this.dolar).toStringAsPrecision(2);
+    euroCtrl.text = (dolar * this.dolar / euro).toStringAsPrecision(2);
+    libraCtrl.text = (dolar * this.dolar / libra).toStringAsPrecision(2);
+
   }
 
-  void _euroChanged(String text) {
+  void _converterEuro(String text) {
     double euro = double.parse(text);
-    realController.text = (euro * this.euro).toStringAsPrecision(2);
-    dolarController.text = (euro * this.euro / dolar).toStringAsPrecision(2);
+    realCtrl.text = (euro * this.euro).toStringAsPrecision(2);
+    dolarCtrl.text = (euro * this.euro / dolar).toStringAsPrecision(2);
+    libraCtrl.text = (euro * this.euro / libra).toStringAsPrecision(2);
+  }
+  
+  void _converterLibra(String text){
+    double libra = double.parse(text);
+    realCtrl.text = (libra * this.libra).toStringAsPrecision(2);
+    dolarCtrl.text = (libra * this.libra / dolar).toStringAsPrecision(2);
+    euroCtrl.text = (libra * this.libra / euro).toStringAsPrecision(2);
+
   }
 
-  void _resetFields() {
+  void _resetarInputs() {
     setState(() {
       FocusScope.of(context).requestFocus(FocusNode());
-      realController.clear();
-      dolarController.clear();
-      euroController.clear();
+      realCtrl.clear();
+      dolarCtrl.clear();
+      euroCtrl.clear();
     });
   }
 
 
-  Widget buildTextField(
+  Widget campoDeTexto(
     String label, String prefix, TextEditingController control, Function f) {
   return TextField(
     controller: control,
@@ -106,6 +120,7 @@ Future<Map> getDados() async {
                 } else {
                   dolar = snapshot.data["results"]["currencies"]["USD"]["buy"];
                   euro = snapshot.data["results"]["currencies"]["EUR"]["buy"];
+                  libra = snapshot.data["results"]["currencies"]["GBP"]["buy"];
 
                   return SingleChildScrollView(
                     padding: EdgeInsets.all(16.0),
@@ -117,17 +132,19 @@ Future<Map> getDados() async {
                           size: 180.0,
                           color: Colors.green,
                         ),
-                        buildTextField(
-                            "Reais", "R\$ ", realController, _realChanged),
+                        campoDeTexto(
+                            "Reais", "R\$ ", realCtrl, _converterReal),
                         Divider(),
-                        buildTextField(
-                            "Dólares", "US\$ ", dolarController, _dolarChanged),
+                        campoDeTexto(
+                            "Dólares", "US\$ ", dolarCtrl, _converterDolar),
                         Divider(),
-                        buildTextField(
-                            "Euros", "€ ", euroController, _euroChanged),
+                        campoDeTexto(
+                            "Euros", "€ ", euroCtrl, _converterEuro),
+                          campoDeTexto("Libra", "♎", libraCtrl, _converterLibra),
+                          Divider(),
                             RaisedButton(
               onPressed: () {
-                _resetFields();
+                _resetarInputs();
               }
                             )
                       ],
