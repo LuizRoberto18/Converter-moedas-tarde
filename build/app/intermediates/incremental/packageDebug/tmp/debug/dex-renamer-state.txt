@@ -1,0 +1,4 @@
+#Fri Jan 17 16:03:24 BRT 2020
+base.0=/home/aluno/Documentos/LuizRoberto/Converter-moedas-tarde/build/app/intermediates/transforms/dexMerger/debug/0
+path.0=classes.dex
+renamed.0=classes.dex
